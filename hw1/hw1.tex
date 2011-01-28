@@ -1,0 +1,110 @@
+% Homework 1 - CS386
+% Russell Miller Winter 2011
+
+\documentclass{article}
+\usepackage{fullpage}
+
+\title{CS386 Homework 1}
+\author{Russell Miller}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Part 1}
+\textbf{For each query: describe what it does, give first five rows, include total number of rows.}
+
+\begin{enumerate}
+
+\item
+\textbf{SELECT agent\_id,first,last  FROM agent;\\}
+\textsf{List all agents' ids and full names.\\
+1 Nick Black\\
+2 Bill Bundt\\
+3 Mathew Cohen\\
+4 Jim Cowan\\
+5 George Fairley\\
+662 rows.\\}
+
+\item
+\textbf{SELECT DISTINCT country  FROM agent;\\}
+\textsf{List the country of each agent, without repeating any.\\
+China\\
+England\\
+Turkey\\
+Germany\\
+Singapore\\
+22 rows.\\}
+
+\item
+\textbf{SELECT agent\_id FROM affiliationrel;\\}
+\textsf{List all agent ids in affiliationrel.\\
+2\\
+3\\
+5\\
+5\\
+7\\
+954 rows.\\}
+
+\pagebreak
+
+\item
+\textbf{SELECT team.name,agent.last  FROM team,teamrel,agent\\
+WHERE teamrel.agent\_id=agent.agent\_id AND team.team\_id=
+teamrel.team\_id AND team.team\_id = 7;\\}
+\textsf{List all team names and agent last names of agents on team 7.\\
+Requires that agent ids and team ids match between tables.\\
+FlyOnTheWall  Kadam\\
+FlyOnTheWall  Yu\\
+FlyOnTheWall  Bliss\\
+FlyOnTheWall  Kottler\\
+FlyOnTheWall  Cockerham\\
+10 rows.\\}
+
+\item
+\textbf{SELECT count(*) FROM language,skill;\\}
+\textsf{Count the number of rows after joining language table and skill table.\\
+1320\\
+1 row.\\}
+
+\item
+\textbf{SELECT * FROM language,skill;\\}
+\textsf{Join and list the entire contents of the language table and skill table.\\
+1 English 1 Sniper\\
+1 English 2 Demolition Expert\\
+1 English 3 Driver\\
+1 English 4 Computer Hacker\\
+1 English 5 Communications\\
+1320 rows.\\}
+
+\end{enumerate}
+
+\textbf{Why are there so many rows in query \#5 and \#6?\\}
+\textsf{When querying from multiple tables, the DBMS produces the cartesian product of the tables. 
+The language table has 20 rows, and the skill table has 66. 20 $\times$ 66 = 1320.\\\\}
+
+\textbf{What is the SQL engine doing to produce this output?\\}
+\textsf{Finding every possible combination of the rows from each table.\\}
+
+\pagebreak
+
+\section*{Part 2}
+\textbf{Create SQL Queries for the following.\\}
+
+\textsf{List the missions for team 44.\\
+SELECT * FROM mission WHERE team\_id = 44;\\\\}
+
+\textsf{List the skills and their skill\_id.\\
+SELECT skill,skill\_id FROM skill;\\\\}
+
+\textsf{List mission names for missions that have an access\_id greater than 4.\\
+SELECT name FROM mission WHERE access\_id \textgreater 4;\\\\}
+
+\textsf{Show agent names (first and last) that have more than a \$150,000 per year salary.\\
+SELECT first,last FROM agent WHERE salary \textgreater 150000;\\\\}
+
+\textsf{List the agents on team 13.\\
+SELECT * FROM agent,teamrel WHERE teamrel.agent\_id = agent.agent\_id AND team\_id = 13;\\\\}
+
+\end{document}

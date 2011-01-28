@@ -1,0 +1,4 @@
+select team.name from mission,team where mission.team_id=team.team_id and mission.mission_status='failed' group by team.name having count(*) = 2;
+
+select author.firstname,author.middlename,author.lastname from author,relauth where author.authorid=relauth.authorid group by author.firstname,author.middlename,author.lastname having count(*) = (select max(count) from (select count(*) from author,relauth,book_description where author.authorid=relauth.authorid and relauth.bookdescid=book_description.bookdescid group by author.authorid) as totals);
+

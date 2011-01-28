@@ -1,0 +1,227 @@
+% Homework 1 - CS386
+% Russell Miller Winter 2011
+
+\documentclass{article}
+\usepackage{anysize}
+\usepackage{wasysym}
+
+\marginsize{2cm}{2cm}{2cm}{2cm}
+
+\title{CS386 Homework 2}
+\author{Russell Miller\\
+Oscar Sanabria}
+\date{\today}
+
+% Relational Algebra
+% SELECT [columns] (aka PROJECT): $\pi$ (π)
+% FROM [rows] (aka SELECTION): $\sigma$ (σ)
+% RENAME: $\rho$ (ρ)
+% JOIN: \Bowtie (⨝) (requires \usepackage{wasysym})
+%    note: R \Bowtie_{c} S = \sigma_{c} (R \times S)
+
+\begin{document}
+
+\maketitle
+
+\section*{Part 1}
+\textbf{Write a relational algebra query that is equivalent to each of the following six SQL queries.\\}
+\begin{enumerate}
+
+\item
+\textbf{SELECT DISTINCT agent\_id FROM Agent;\\}
+$\pi_{agent\_id}(Agent)$\\
+
+\item
+\textbf{SELECT agent\_id FROM Agent;\\}
+$\pi_{agent\_id}(Agent)$\\
+
+\item
+\textbf{SELECT DISTINCT meeting\_frequency FROM Team;\\}
+$\pi_{meeting\_frequency}(Team)$\\
+
+\end{enumerate}
+
+\textbf{For questions 4 and 5, write the relational algebra expressions in two different ways.\\}
+\begin{enumerate}
+
+\item[4]
+\textbf{SELECT * FROM Agent A, SecurityClearance S WHERE A.clearance\_id=S.sc\_id AND A.country='USA' AND S.sc\_id\textgreater4;\\}
+$\sigma_{A.clearance\_id=S.sc\_id \wedge A.country='USA' \wedge S.sc\_id\textgreater4}(A \times S)$\\
+$A \Bowtie_{A.clearance\_id=S.sc\_id \wedge A.country='USA' \wedge S.sc\_id\textgreater4} S$\\
+
+\item[5]
+\textbf{SELECT DISTINCT AF.description, AR.affiliation\_strength, A.last, A.salary FROM Agent A, AffiliationRel AR, 
+Affiliation AF WHERE A.agent\_id=AR.agent\_id AND\\ AR.aff\_id=AF.aff\_id;\\}
+$\pi_{AF.description,AR.affiliation\_strength,A.last,A.salary}$\\
+$(\sigma_{A.agent\_id=AR.agent\_id \wedge AR.aff\_id=AF.aff\_id}(A \times AR \times AF))$\\
+\\
+$\pi_{AF.description,AR.affiliation\_strength,A.last,A.salary}(A \Bowtie_{A.agent\_id=AR.agent\_id} AR 
+\Bowtie_{AR.aff\_id=AF.aff\_id} AF)$\\
+
+\end{enumerate}
+
+\pagebreak
+
+\section*{Part 2}
+\textbf{For each of the following relational algebra queries: write an equivalent SQL query, 
+show the count of how many rows are returned in the query answer when you run your SQL query
+against the Spy database, and show (at most) five rows of your query answer when you run your
+SQL query against the Spy database.\\}
+\begin{enumerate}
+
+\item
+\textsf{$\pi_{agent.agent\_id,first,last}($\\
+$(teamrel \Bowtie_{teamrel.team\_id=team.team\_id}
+(\sigma_{name='Jester'}team))$\\
+$\Bowtie_{agent.agent\_id=teamrel.agent\_id}(agent))$\\}
+\\
+SELECT $agent.agent\_id,first,last$ FROM $teamrel$ INNER JOIN $team$\\ 
+ON $teamrel.team\_id=team.team\_id$ AND $team.name='Jester'$\\ 
+INNER JOIN $agent$ ON $agent.agent\_id=teamrel.agent\_id;$\\
+8 rows:\\
+\begin{tabular}{l l l}
+174 & Travis & Balasubramanian\\
+324 & Ethan  & Kokkelemberg\\
+391 & George & Riley\\
+518 & John   & Lomeli\\
+580 & George & Jiammin\\
+\end{tabular}
+
+\item
+\textsf{$\pi_{A.first,A.last}((skillrel SR2 \Bowtie_{SR2.skill\_id=SR1.skill\_id}($\\
+$\sigma_{agent\_id=5}skillrel SR1)) \Bowtie_{A.agent\_id=SR2.agent\_id}(agent A))$\\}
+\\
+SELECT $A.first,A.last$ FROM $skillrel SR2$ INNER JOIN $skillrel SR1$\\
+ON $SR2.skill\_id=SR1.skill\_id$ INNER JOIN $agent A$ ON $A.agent\_id=SR2.agent\_id$\\
+WHERE $SR1.agent\_id=5;$\\
+25 rows:\\
+\begin{tabular}{l l}
+George   & Fairley\\
+Nickolas & Godfrey\\
+Tom      & Vengataraman\\
+Alex     & Brunner\\
+Marie    & McKinney\\
+\end{tabular}
+
+\item
+\textsf{$\pi_{skill}(skill \Bowtie_{skill.skill\_id=skillrel.skill\_id} ($\\
+$skillrel \Bowtie_{skillrel.agent\_id=agent.agent\_id} ($\\
+$agent \Bowtie_{agent.agent\_id=teamrel.agent\_id} ($\\
+$teamrel \Bowtie_{teamrel.team\_id=team.team\_id} ($\\
+$team \Bowtie_{team.team\_id=mission.team\_id} ($\\
+$\sigma_{name='Black'}mission))))))$\\}
+\\
+SELECT DISTINCT $skill$ FROM $skill$ INNER JOIN $skillrel$\\
+ON $skill.skill\_id=skillrel.skill\_id$ INNER JOIN $agent$\\
+ON $skillrel.agent\_id=agent.agent\_id$ INNER JOIN $teamrel$\\ 
+ON $agent.agent\_id=teamrel.agent\_id$ INNER JOIN $team$\\ 
+ON $teamrel.team\_id=team.team\_id$ INNER JOIN $mission$\\ 
+ON $team.team\_id=mission.team\_id$ AND $mission.name='Black';$\\
+19 rows:\\
+Foreign Linguist\\
+Speed Reader\\
+Radar Intelligence\\
+Blackbelt - Karate\\
+Medicine\\
+
+\end{enumerate}
+
+\section*{Part 3}
+\begin{description}
+\item[A.]
+\textbf{Write two SQL queries for each report below: one that uses JOIN and one that does not.\\}
+
+\item[B.]
+\textbf{Write an equivalent relational algebra statement for one of the SQL statements in part A.\\}
+\end{description}
+
+\begin{enumerate}
+\item
+\begin{description}
+\item[A.]
+\textsf{List the artist names that are in the R\&B genre.\\}
+SELECT artist FROM record\_artists INNER JOIN product\_music\_extra\\
+ON record\_artists.artists\_id=product\_music\_extra.artists\_id INNER JOIN music\_genre\\
+ON product\_music\_extra.music\_genre\_id=music\_genre.genre\_id\\ 
+WHERE music\_genre.music\_genre\_name='R\&B';\\
+\\
+SELECT artist\\
+FROM record\_artists,product\_music\_extra,music\_genre\\
+WHERE record\_artists.artists\_id=product\_music\_extra.artists\_id\\
+AND product\_music\_extra.music\_genre\_id=music\_genre.genre\_id\\
+AND music\_genre.music\_genre\_name='R\&B';\\
+\\
+\item[B.]
+$\pi_{artist}(record\_artists \Bowtie_{record\_artists.artists\_id=product\_music\_extra.artists\_id} ($\\
+$product\_music\_extra \Bowtie_{product\_music\_extra.music\_genre\_id=music\_genre.genre\_id} ($\\
+$\sigma_{music\_genre\_name='R\&B'}music\_genre)))$\\
+\end{description}
+
+\item
+\begin{description}
+\item[A.]
+\textsf{List the products\_ids that have the record company 'Acme Records'.\\}
+SELECT products\_id FROM product\_music\_extra INNER JOIN record\_company\\
+ON product\_music\_extra.record\_company\_id=record\_company.record\_company\_id\\
+WHERE record\_company.record\_company\_name='Acme Records';\\
+\\
+SELECT products\_id\\
+FROM product\_music\_extra,record\_company\\
+WHERE product\_music\_extra.record\_company\_id=record\_company.record\_company\_id\\
+AND record\_company.record\_company\_name='Acme Records';\\
+\\
+\item[B.]
+$\pi_{products\_id}($
+$product\_music\_extra \Bowtie_{product\_music\_extra.record\_company\_id=}$\\
+$_{record\_company.record\_company\_id} ($\\
+$\sigma_{record\_company.record\_company\_name='Acme Records'}record\_company))$\\
+\end{description}
+
+\item
+\begin{description}
+\item[A.]
+\textsf{List the record\_company\_names that have artists in the R\&B genre.\\}
+SELECT record\_company\_name FROM record\_company INNER JOIN product\_music\_extra\\
+ON record\_company.record\_company\_id=product\_music\_extra.record\_company\_id\\
+INNER JOIN music\_genre ON product\_music\_extra.music\_genre\_id=music\_genre.music\_genre\_id\\
+WHERE music\_genre.music\_genre\_name='R\&B';\\
+\\
+SELECT record\_company\_name\\
+FROM record\_company,product\_music\_extra,music\_genre\\
+WHERE record\_company.record\_company\_id=product\_music\_extra.record\_company\_id\\
+AND product\_music\_extra.music\_genre\_id=music\_genre.music\_genre\_id\\
+AND music\_genre.music\_genre\_name='R\&B';\\
+
+\pagebreak
+\item[B.]
+$\pi_{record\_company\_name}($\\
+$record\_company \Bowtie_{record\_company.record\_company\_id=product\_music\_extra.record\_company\_id} ($\\
+$product\_music\_extra \Bowtie_{product\_music\_extra.music\_genre\_id=music\_genre.music\_genre\_id} ($\\
+$\sigma_{music\_genre.music\_genre\_name='R\&B'}music\_genre)))$\\
+\end{description}
+
+\item
+\begin{description}
+\item[A.]
+\textsf{What are the record\_company\_urls that produce music in the 'Rock' genre\\}
+SELECT record\_company\_url FROM record\_company\_info\\
+INNER JOIN product\_music\_extra\\ 
+ON record\_company.record\_company\_id=product\_music\_extra.record\_company\_id\\
+INNER JOIN music\_genre\\
+ON product\_music\_extra.music\_genre\_id=music\_genre.music\_genre\_id\\
+WHERE music\_genre.music\_genre\_name='Rock';\\
+\\
+SELECT record\_company\_url\\
+FROM record\_company\_info,product\_music\_extra,\\
+WHERE record\_company\_info.record\_company\_id = product\_music\_extra.record\_company\_id\\
+AND product\_music\_extra.music\_genre\_id = music\_genre.music\_genre\_id\\
+AND music\_genre\_name = 'Rock';\\
+\item[B.]
+$\pi_{record\_company\_url}($\\
+$record\_company\_info \Bowtie_{record\_company.record\_company\_id=product\_music\_extra.record\_company\_id} ($\\
+$product\_music\_extra \Bowtie_{product\_music\_extra.music\_genre\_id=music\_genre.music\_genre\_id} ($\\
+$\sigma_{music\_genre.music\_genre\_name='Rock'}music\_genre)))$\\
+\end{description}
+\end{enumerate}
+
+\end{document}
