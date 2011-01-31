@@ -1,0 +1,182 @@
+% Homework 3 - CS386
+% Russell Miller Winter 2011
+
+\documentclass{article}
+\usepackage{anysize}
+\usepackage{wasysym}
+
+\marginsize{2cm}{2cm}{2cm}{2cm}
+
+\title{CS386 Homework 3}
+\author{Russell Miller}
+\date{\today}
+
+% Relational Algebra
+% SELECT [columns] (aka PROJECT): $\pi$ (π)
+% FROM [rows] (aka SELECTION): $\sigma$ (σ)
+% RENAME: $\rho$ (ρ)
+% JOIN: \Bowtie (⨝) (requires \usepackage{wasysym})
+%    note: R \Bowtie_{c} S = \sigma_{c} (R \times S)
+
+\begin{document}
+
+\maketitle
+
+\section*{Part 1}
+\textbf{Turn in the SQL query, the first five rows of the query answer, and the number of rows
+in your query answer.}
+\begin{enumerate}
+
+\item
+\textbf{Using the spy database, write an SQL query to find the names of teams who have failed
+exactly two missions.\\}
+SELECT team.name\\
+FROM mission,team\\
+WHERE mission.team\_id=team.team\_id\\
+AND mission.mission\_status='failed'\\
+GROUP BY team.name\\
+HAVING COUNT(*) = 2;\\
+\begin{tabular}{l}
+ name      \\
+\hline
+ Roadkill\\
+ Vikings\\
+ Blaster\\
+ Failsafe\\
+ ShowBiz\\
+\end{tabular}
+\\13 rows.\\
+
+\item
+\textbf{Using the library database, list the authors that have published the largest number
+of books.\\}
+SELECT author.firstname,author.middlename,author.lastname\\
+FROM author,relauth\\
+WHERE author.authorid=relauth.authorid\\
+GROUP BY author.firstname,author.middlename,author.lastname\\
+HAVING COUNT(*) = (SELECT max(COUNT)\\
+\hspace*{4 cm}      FROM (SELECT COUNT(*)\\
+\hspace*{6 cm}            FROM author,relauth,book\_description\\
+\hspace*{6 cm}            WHERE author.authorid=relauth.authorid\\
+\hspace*{6 cm}            AND relauth.bookdescid=book\_description.bookdescid\\
+\hspace*{6 cm}            GROUP BY author.authorid) AS totals);\\
+\begin{tabular}{l|l|l}
+ firstname & middlename &  lastname  \\
+\hline
+ DEMETRIOS & G          & LAINIOTIS\\
+ KRITHI    &            & RAMAMRITHA\\
+ D.        &            & BAKER\\
+ THOMAS    & C          & MCINTIRE\\
+ JOHN      &            & MCCONNELL\\
+\end{tabular}
+\\5 rows.\\
+
+\pagebreak
+
+\item
+\textbf{Using the spy databse, are the following two SQL qeueries equivalent? Describe the
+two queries in English and explain how they are different.\\}
+No. They are different queries. (a) uses a natural join on the Team table and the Mission
+table. This means equality is specified on all fields with the same name. Since Team and
+Mission both have a 'name' column, the two would have to be equal in order for the row to
+show up in the query answer. (a) lists the successful missions where the team name is the
+same as the mission name. (b) lists the successful missions for each team, along with the
+team name.\\
+
+\item
+\textbf{List the agents who were assigned to at least one 'failed' mission. Write this
+query in two versions, one using EXISTS and another using IN.\\}
+
+SELECT a.first,a.last\\
+FROM agent a\\
+WHERE EXISTS (SELECT DISTINCT agent.agent\_id\\
+\hspace*{3 cm}FROM agent,teamrel,team,mission\\
+\hspace*{3 cm}WHERE agent.agent\_id=teamrel.agent\_id\\
+\hspace*{3 cm}AND teamrel.team\_id=team.team\_id\\
+\hspace*{3 cm}AND team.team\_id=mission.team\_id\\
+\hspace*{3 cm}AND mission\_status='failed'\\
+\hspace*{3 cm}AND agent.agent\_id=a.agent\_id\\
+\hspace*{3 cm}GROUP BY agent.agent\_id\\
+\hspace*{3 cm}HAVING COUNT(*) > 0);\\
+\begin{tabular}{l|l}
+first   &      last       \\
+\hline
+ Nick      & Black\\
+ Mathew    & Cohen\\
+ Jim       & Cowan\\
+ George    & Fairley\\
+ George    & Jones\\
+\end{tabular}
+\\221 rows.\\
+
+SELECT a.first,a.last\\
+FROM agent a\\
+WHERE a.agent\_id IN (SELECT DISTINCT agent.agent\_id\\
+\hspace*{4 cm}        FROM agent,teamrel,team,mission\\
+\hspace*{4 cm}        WHERE agent.agent\_id=teamrel.agent\_id\\
+\hspace*{4 cm}        AND teamrel.team\_id=team.team\_id\\
+\hspace*{4 cm}        AND team.team\_id=mission.team\_id\\
+\hspace*{4 cm}        AND mission\_status='failed'\\
+\hspace*{4 cm}        GROUP BY agent.agent\_id\\
+\hspace*{4 cm}        HAVING COUNT(*) $>$ 0);\\
+\begin{tabular}{l|l}
+   first   &      last\\       
+\hline
+ Nick      & Black\\
+ Mathew    & Cohen\\
+ Jim       & Cowan\\
+ George    & Fairley\\
+ George    & Jones\\
+\end{tabular}
+\\221 rows.\\
+
+\pagebreak
+
+\item
+\textbf{List the agents that have skills of 'Firearms' or 'Biologist' using the IN clause.\\}
+SELECT a.first,a.last\\
+FROM agent a\\
+WHERE a.agent\_id IN (SELECT agent.agent\_id\\
+\hspace*{4 cm}       FROM agent,skillrel,skill\\
+\hspace*{4 cm}       WHERE agent.agent\_id=skillrel.agent\_id\\
+\hspace*{4 cm}       AND skillrel.skill\_id=skill.skill\_id\\
+\hspace*{4 cm}       AND (skill.skill='Firearms' OR skill.skill='Biologist'));\\
+\begin{tabular}{l|l}
+first     &    last     \\
+\hline
+ Nick         & Black\\
+ Chris        & Leen\\
+ Kristin      & Moody\\
+ Nick         & Steere\\
+ Pete         & Consel\\
+\end{tabular}
+\\84 rows.\\
+
+\item
+\textbf{Rewrite the query described in question 5 without using IN.\\}
+SELECT agent.first,agent.last\\
+FROM agent,skillrel,skill\\
+WHERE agent.agent\_id=skillrel.agent\_id\\
+AND skillrel.skill\_id=skill.skill\_id\\
+AND (skill.skill='Firearms' or skill.skill='Biologist');\\
+\begin{tabular}{l|l}
+first     &    last     \\
+\hline
+ Nick         & Steere\\
+ Helen        & Hermansky\\
+ Pete         & Pickering\\
+ Robert       & Smith\\
+ George       & Berkling\\
+\end{tabular}
+\\84 rows.\\
+
+\item
+\textbf{Write a relational algebra query that is equivalent to the query described in question 5.\\}
+$\pi_{agent.first,agent.last}($\\
+$agent \Bowtie_{agent.agent\_id=skillrel.agent\_id} ($\\
+$skillrel \Bowtie_{skillrel.skill\_id=skill.skill\_id} ($\\
+$\sigma_{skill.skill='Firearms'\; \vee\; skill.skill='Biologist'}skill)))$\\
+
+\end{enumerate}
+
+\end{document}
