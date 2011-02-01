@@ -179,4 +179,64 @@ $\sigma_{skill.skill='Firearms'\; \vee\; skill.skill='Biologist'}skill)))$\\
 
 \end{enumerate}
 
+\section*{Part 2}
+\textbf{Outer joins. Write two responses for each question, one with LEFT OUTER JOIN, and the
+second with RIGHT OUTER JOIN.}
+\begin{enumerate}
+\item
+\textbf{Write a query that counts the number of agents that are not on a team.\\}
+$LEFT:$\\
+SELECT q.first,q.last\\
+FROM (SELECT a.agent\_id,a.first,a.last,t.team\_id\\
+\hspace*{1 cm}FROM agent a LEFT OUTER JOIN teamrel t\\
+\hspace*{1 cm}ON a.agent\_id=t.agent\_id) AS q\\
+\hspace*{5 cm}                          WHERE q.team\_id IS NULL;\\
+\begin{tabular}{l|l}
+first      &     last     \\
+\hline
+ Bill            & Bundt\\
+ Bill            & Heeman\\
+ Andrew          & James\\
+ Kristin         & Delcambre\\
+ John            & Johnston\\
+\end{tabular}
+\\368 rows.\\
+
+$RIGHT:$\\
+SELECT q.first,q.last\\
+FROM (SELECT a.agent\_id,a.first,a.last,t.team\_id\\
+\hspace*{1 cm}FROM teamrel t RIGHT OUTER JOIN agent a\\
+\hspace*{1 cm}ON a.agent\_id=t.agent\_id) AS q\\
+\hspace*{5 cm}                          WHERE q.team\_id IS NULL;\\
+\begin{tabular}{l|l}
+first      &     last     \\
+\hline
+ Bill            & Bundt\\
+ Bill            & Heeman\\
+ Andrew          & James\\
+ Kristin         & Delcambre\\
+ John            & Johnston\\
+\end{tabular}
+\\368 rows.\\
+
+\item
+\textbf{Write a query that lists teams that do not have agents.\\}
+$LEFT:$\\
+SELECT q.name\\
+FROM (SELECT t.team\_id,t.name,r.agent\_id\\
+\hspace*{1 cm}FROM team t LEFT OUTER JOIN teamrel r\\
+\hspace*{1 cm}ON t.team\_id=r.team\_id) AS q\\
+\hspace*{5 cm}                        WHERE q.agent\_id IS NULL;\\
+\\0 rows.\\
+
+$RIGHT:$\\
+SELECT q.name\\
+FROM (SELECT t.team\_id,t.name,r.agent\_id\\
+\hspace*{1 cm}FROM teamrel r RIGHT OUTER JOIN team t\\
+\hspace*{1 cm}ON t.team\_id=r.team\_id) AS q\\
+\hspace*{5 cm}                        WHERE q.agent\_id IS NULL;\\
+\\0 rows.\\
+
+\end{enumerate}
+
 \end{document}
