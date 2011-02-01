@@ -180,7 +180,7 @@ $\sigma_{skill.skill='Firearms'\; \vee\; skill.skill='Biologist'}skill)))$\\
 \end{enumerate}
 
 \section*{Part 2}
-\textbf{Outer joins. Write two responses for each question, one with LEFT OUTER JOIN, and the
+\textbf{Outer joins - Write two responses for each question, one with LEFT OUTER JOIN, and the
 second with RIGHT OUTER JOIN.}
 \begin{enumerate}
 \item
@@ -236,6 +236,17 @@ FROM (SELECT t.team\_id,t.name,r.agent\_id\\
 \hspace*{1 cm}ON t.team\_id=r.team\_id) AS q\\
 \hspace*{5 cm}                        WHERE q.agent\_id IS NULL;\\
 \\0 rows.\\
+
+\end{enumerate}
+
+\section*{Part 3}
+\textbf{Relational Algebra - For each exercise, describe in English what the expression performs
+and write the equivalent SQL query, the first five rows of the query answer, and the number of
+rows in your query answer.}
+\begin{enumerate}
+
+\item
+$\pi_{team\_id}(Mission - (\sigma_{mission_status='failed'}Mission))$\\
 
 \end{enumerate}
 
