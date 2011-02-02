@@ -179,6 +179,8 @@ $\sigma_{skill.skill='Firearms'\; \vee\; skill.skill='Biologist'}skill)))$\\
 
 \end{enumerate}
 
+\pagebreak
+
 \section*{Part 2}
 \textbf{Outer joins - Write two responses for each question, one with LEFT OUTER JOIN, and the
 second with RIGHT OUTER JOIN.}
@@ -239,6 +241,8 @@ FROM (SELECT t.team\_id,t.name,r.agent\_id\\
 
 \end{enumerate}
 
+\pagebreak
+
 \section*{Part 3}
 \textbf{Relational Algebra - For each exercise, describe in English what the expression performs
 and write the equivalent SQL query, the first five rows of the query answer, and the number of
@@ -246,8 +250,74 @@ rows in your query answer.}
 \begin{enumerate}
 
 \item
-$\pi_{team\_id}(Mission - (\sigma_{mission_status='failed'}Mission))$\\
+$\pi_{team\_id}(Mission - (\sigma_{mission\_status='failed'}Mission))$\\
+List the team id for missions that were not failed.\\
+SELECT DISTINCT team\_id\\
+FROM mission\\
+WHERE mission\_status != 'failed';\\
+\begin{tabular}{l}
+ team\_id \\
+\hline
+      34\\
+      25\\
+      27\\
+      32\\
+      12\\
+\end{tabular}
+\\34 rows.\\
 
+\item
+$\pi_{team\_id}(Mission - (\sigma_{mission\_status='success'}Mission))\; \cap$\\
+$\quad\pi_{team\_id}(Mission - (\sigma_{mission\_status='ongoing'}Mission))$\\
+List the team id for missions that are not success or ongoing.\\
+(SELECT DISTINCT team\_id\\
+FROM mission\\
+WHERE mission\_status != 'success')\\
+INTERSECT\\
+(SELECT DISTINCT team\_id\\
+FROM mission\\
+WHERE mission\_status != 'ongoing')\\
+\begin{tabular}{l}
+ team\_id \\
+\hline
+      12\\
+      28\\
+       8\\
+      17\\
+      36\\
+\end{tabular}
+\\29 rows.\\
+
+\pagebreak
+
+\item
+$\pi_{agent\_id}($\\
+$((\sigma_{description='British\ Secret\ Service'}Affiliation)
+\Bowtie AffiliationRel)\; \cup$\\
+$((\sigma_{description='Central\ Intelligence\ Agency'}Affiliation)
+\Bowtie AffiliationRel))$\\
+$ - \pi_{agent\_id}(\sigma_{salary > 100000}Agent)$\\
+List the agent ids of people either in the British Secret Service or
+Central Intelligence Agency whose salary is not more than \$100000.\\
+SELECT DISTINCT agent\_id\\
+FROM agent NATURAL JOIN ((SELECT DISTINCT agent\_id\\
+\hspace*{5 cm}            FROM affiliation NATURAL JOIN affiliationrel\\
+\hspace*{5 cm}            WHERE description='British Secret Service')\\
+\hspace*{5 cm}            UNION\\
+\hspace*{5 cm}            (SELECT DISTINCT agent\_id\\
+\hspace*{5 cm}            FROM affiliation NATURAL JOIN affiliationrel\\
+\hspace*{5 cm}            WHERE description='Central Intelligence Agency')) AS subq\\
+WHERE salary $\leq$ 100000;\\
+\begin{tabular}{l}
+agent\_id \\
+\hline
+      727\\
+     1046\\
+     1070\\
+      252\\
+      523\\
+\end{tabular}
+\\42 rows.\\
 \end{enumerate}
 
 \end{document}
