@@ -1,23 +1,57 @@
-1. first Q is joining teamrel and agent on agent id, meaning it will not produce a row
-for agents that aren't on a team. the second Q has an inner query that just groups all
-team ids, and an outer query that selects from every agent, so it will produce rows of
-agents on 0 teams.
+                          Homework 4
+                          Russell Miller
+                          02/15/11
 
-These queries both list the name of an agent and the number of teams that agent is on.
+1. The first query is joining teamrel and agent on agent id, meaning it will not 
+produce a row for agents that aren't on a team. the second query has an inner 
+query that just groups all team ids, and an outer query that selects from every 
+agent, so it will produce rows of agents on 0 teams.
 
-2. first Q is joining team and mission on team id, meaning it will not produce a row
-for teams that are not on any missions. the second Q has an inner query that just groups
-all team ids, and an outer query that selects from every team, so it is capable of
-producing rows of teams that are on 0 missions, despite there being no 0-mission teams
-currently.
+These queries both list the name of an agent and the number of teams that agent 
+is on.
 
-These queries both list the name of a team and the number of missions that team is on.
+2. The first query is joining team and mission on team id, meaning it will not 
+produce a row for teams that are not on any missions. the second query has an 
+inner query that just groups all team ids, and an outer query that selects from 
+every team, so it is capable of producing rows of teams that are on 0 missions, 
+despite there being no 0-mission teams currently.
 
-3. They would be equivalent if mission.team_id had a NOT NULL constraint, because
-right now the second query is able to show missions that have no teams on them, but
-the first query can only find missions that have teams on them. with NOT NULL
-constraining mission.team_id there has to be a team on every mission.
+These queries both list the name of a team and the number of missions that team 
+is on.
 
-These queries both list mission names and ids, along with how many teams are on that mission.
+3. They would be equivalent if mission.team_id had a NOT NULL constraint, 
+because right now the second query is able to show missions that have no teams 
+on them, but the first query can only find missions that have teams on them. 
+with NOT NULL constraining mission.team_id there has to be a team on every missi
+on.
 
-4. 
+These queries both list mission names and ids, along with how many teams are on 
+that mission.
+
+4. No, the first one is checking that an agent's skills exactly match agent 151, 
+the other one is just counting the number of skills each agent has.
+
+The first query lists the agents that have the same skills as agent 151.
+The second lists the agents that have the same number of skills as agent 151.
+
+5. Yes, these are equivalent queries. Both queries would result in listing the 
+agent_id, first name, and last name of agent 151.
+
+6. No. The first query lists the sailors who have not reserved a blue boat.
+The second query is listing the sailors who have reserved a blue boat.
+
+7. 
+π name (σ mission_status='failed' /\ mission_status='failed' (mission))
+This is equivalent to the first SQL query.
+
+It's not possible to do the second query, above you will only see one row
+per mission name. The SQL version would produce a row for every mission that
+is either failed or successful. 
+
+8.
+π agent_id (agent a - (π sr.skill_id (skillrel sr - (π skill_id 
+  	   (σ agent_id=151 (skillrel))))))
+
+π agent_id (π skill_id (skillrel - (π sr.skill_id (σ agent_id=151 
+  	   (skillrel sr)))))
+These are not equivalent because they do not use correlated inner queries.
