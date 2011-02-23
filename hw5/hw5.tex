@@ -1,0 +1,75 @@
+% Homework 5 - CS386(late submission)
+% Russell Miller Winter 2011
+
+\documentclass{article}
+\usepackage{anysize}
+\usepackage{wasysym}
+
+\marginsize{2cm}{2cm}{2cm}{2cm}
+
+\title{CS386 Homework 5}
+\author{Russell Miller}
+\date{\today}
+
+% Relational Algebra
+% SELECT [columns] (aka PROJECT): $\pi$ (π)
+% FROM [rows] (aka SELECTION): $\sigma$ (σ)
+% RENAME: $\rho$ (ρ)
+% JOIN: \Bowtie (⨝) (requires \usepackage{wasysym})
+%    note: R \Bowtie_{c} S = \sigma_{c} (R \times S)
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+\item
+\textbf{Prove these two expressions are equivalent:\\}
+$\sigma_{sid > 0}(\sigma_{sid < 207}(\pi_{sid}(\sigma_{color=blue}(\pi_{sid,color}(
+ reserves \Bowtie boats)))))$\\
+$\sigma_{sid > 0 \wedge sid < 207}(\pi_{sid}(\sigma_{color=blue}(
+ boats) \Bowtie reserves))$\\
+
+\begin{quote}
+Because the selection $\sigma_{color=blue}$ only involves an attribute retained by the
+projection $\pi_{sid,color}$, the two can be commuted.\\
+$\sigma_{sid > 0}(\sigma_{sid < 207}(\pi_{sid}(\pi_{sid,color}(\sigma_{color=blue}(
+ reserves \Bowtie boats)))))$\\
+\\
+The join $reserves \Bowtie boats$ can be commuted.\\
+$\sigma_{sid > 0}(\sigma_{sid < 207}(\pi_{sid}(\pi_{sid,color}(\sigma_{color=blue}(
+ boats \Bowtie reserves)))))$\\
+\\
+Because the selection $\sigma_{color=blue}$ involves only color, which is not an attribue
+of reserves, it can be commuted with the join $boats \Bowtie reserves$.\\
+$\sigma_{sid > 0}(\sigma_{sid < 207}(\pi_{sid}(\pi_{sid,color}(\sigma_{color=blue}(
+ boats) \Bowtie reserves))))$\\
+\\
+The cascading projections $\pi_{sid}(\pi_{sid,color}(R))$ are equivalent to the final
+projection.\\
+$\sigma_{sid > 0}(\sigma_{sid < 207}(\pi_{sid}(\sigma_{color=blue}(
+ boats) \Bowtie reserves)))$\\
+\\
+The cascading selections $\sigma_{sid > 0}(\sigma_{sid < 207}(R))$ are equivalent to
+a single conjunction selection.\\
+$\sigma_{sid > 0 \wedge sid < 207}(\pi_{sid}(\sigma_{color=blue}(
+ boats) \Bowtie reserves))$\\
+\end{quote}
+
+\item
+\textbf{Rewrite this query with SUB-SELECT instead of WHERE.\\}
+SELECT agent\_id\\
+FROM skillrel\\
+GROUP BY agent\_id HAVING count(skill\_id) $>$ 4;\\
+\begin{quote}
+SELECT DISTINCT agent\_id\\
+FROM skillrel sr1\\
+WHERE 4 $<$ (SELECT count(skill\_id)\\
+\hspace*{2cm}FROM skillrel sr2\\
+\hspace*{2cm}WHERE sr1.agent\_id=sr2.agent\_id);\\
+\\
+The query response was 115 rows.
+\end{quote}
+
+\end{enumerate}
+\end{document}
