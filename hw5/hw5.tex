@@ -27,19 +27,45 @@ Edited with the GIMP [GNU Image Manipulation Program]}
 \end{center}
 Relational Schema for this ERD:
 \begin{quote}
-Student(\underline{id}, name, advisor) advisor references Faculty.id\\
-Faculty(\underline{id}, name)\\
-Teachers(\underline{faculty\_id, student\_id}) faculty\_id references Faculty.id, student\_id 
+\textbf{Student}(\underline{id}, name, advisor) advisor references Faculty.id\\
+\textbf{Faculty}(\underline{id}, name)\\
+\textbf{Teachers}(\underline{faculty\_id, student\_id}) faculty\_id references Faculty.id, student\_id 
 references Student.id\\
-Employments(\underline{faculty\_id, student\_id}) faculty\_id references Faculty.id, student\_id 
+\textbf{Employments}(\underline{faculty\_id, student\_id}) faculty\_id references Faculty.id, student\_id 
 references Student.id\\
 \end{quote}
 
 \item[b.]
 ERD with cardinality contraints:\\
 \begin{center}
- 
+ \includegraphics[scale=.8]{1b.png}
 \end{center}
+Relational Schema:
+\begin{quote}
+\textbf{Student}(\underline{id}, name, advisor, employer) advisor not null and references Faculty.id, employer references Faculty.id\\
+\textbf{Faculty}(\underline{id}, name, employee) employee references Student.id\\
+\textbf{Teachings}(\underline{faculty\_id, student\_id}) faculty\_id references Faculty.id, student\_id
+references Student.id\\
+\end{quote}
+\end{description}
+
+\section{}
+\textbf{Person\\}
+\begin{description}
+\item[a.]
+$\quad id \rightarrow ssn,name,phone$\\
+$ssn \rightarrow name$
+\item[b.]
+$\quad id,ssn \rightarrow id$\\
+$id,ssn \rightarrow ssn$\\
+$id,name \rightarrow name$\\
+$id,phone \rightarrow phone$
+\item[c.]
+$\quad none$
+\item[d.]
+$\quad none$
+\item[e.]
+$\quad none$
 \end{description}
 
 \end{document}
