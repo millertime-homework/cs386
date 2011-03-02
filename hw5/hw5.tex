@@ -50,22 +50,112 @@ references Student.id\\
 \end{description}
 
 \section{}
-\textbf{Person\\}
 \begin{description}
 \item[a.]
-$\quad id \rightarrow ssn,name,phone$\\
-$ssn \rightarrow name$
+\textbf{\\Person\\}
+$id \rightarrow id\; ssn\; name\; phone$\\
+$ssn \rightarrow id\; ssn\; name\; phone$\\
+\textbf{PolicyOwner\\}
+$Personid\; PolicyNumber \rightarrow SSN\; Start$-$date$\\
+$PolicyNumber\; SSN \rightarrow Personid\; Start$-$date$\\
+\textbf{InsurancePolicy\\}
+$PolicyNumber \rightarrow AgentNumber\; AgentName\; Premium$
 \item[b.]
-$\quad id,ssn \rightarrow id$\\
-$id,ssn \rightarrow ssn$\\
-$id,name \rightarrow name$\\
-$id,phone \rightarrow phone$
+\textbf{\\Person\\}
+$id \rightarrow id$\\
+$ssn \rightarrow ssn$\\
+$id\; name \rightarrow name$\\
+$ssn\; name \rightarrow name$\\
+$id\; phone \rightarrow phone$\\
+\textbf{PolicyOwner\\}
+$Personid\; PolicyNumber \rightarrow Personid\; PolicyNumber$\\
+$PolicyNumber\; SSN \rightarrow PolicyNumber\; SSN$\\
+$Personid\; PolicyNumber\; SSN \rightarrow SSN$\\
+$Personid\; PolicyNumber\; SSN \rightarrow Personid$\\
+$PolicyNumber\; SSN\; Start$-$date \rightarrow Start$-$date$\\
+\textbf{InsurancePolicy\\}
+$PolicyNumber \rightarrow PolicyNumber$\\
+$PolicyNumber\; AgentNumber \rightarrow AgentNumber$\\
+$PolicyNumber\; AgentName \rightarrow AgentName$\\
+$PolicyNumber\; Premium \rightarrow Premium$\\
+$PolicyNumber\; AgentNumber\; AgentName \rightarrow AgentName$\\
 \item[c.]
-$\quad none$
+\textbf{\\Person\\}
+$none$\\
+\textbf{PolicyOwner\\}
+$Personid \rightarrow SSN$\\
+$SSN \rightarrow Personid$\\
+\textbf{InsurancePolicy\\}
+$AgentNumber \rightarrow AgentName$
 \item[d.]
-$\quad none$
+\textbf{\\Person\\}
+N/A\\
+\textbf{PolicyOwner\\}
+Because of the redundancy of the SSN field between the Person table and the
+PolicyOwner table, iff the SSN field is updated in either table, there may
+be a discrepancy between the values in the tables, when they should match.\\
+\textbf{InsurancePolicy\\}
+If an AgentNumber or AgentName change for a specific insurance agent, and
+more than one policy has the same agent, it's possible that the rows, which
+should have matching AgentNumbers and AgentNames, could have a discrepancy.
+
+\pagebreak
+
 \item[e.]
-$\quad none$
+\textbf{\\Person}(\underline{id}, ssn, name, phone)\\
+\textbf{PolicyOwner}(\underline{Personid, PolicyNumber}, Start-date) Personid 
+references Person.id and PolicyNumber references InsurancePolicy.PolicyNumber\\
+\textbf{InsurancePolicy}(\underline{PolicyNumber}, AgentNumber, Premium) 
+AgentNumber references Agent.id\\
+\textbf{Agent}(\underline{id}, name)
 \end{description}
 
+\section{}
+\begin{description}
+\item[a.]
+\ \\
+Student(\underline{id}, student-name, phone, major)\\
+Advisor(\underline{student-name, advisor-id}, advisor-name) student-name references
+Student.student-name\\
+\item[b.]
+\textbf{\\Original Table:\\}
+\begin{tabular}{l|l|l|l|l|l}
+id & name & phone    & advisor-id & advisor-name & major\\
+\hline
+1  & Mary  & 555-1111 & 1          & Aren         & Dancing\\
+2  & Ben   & 555-0121 & 2          & Justin       & Basketweaving\\
+3  & Mary  & 555-3345 & 3          & Wendy        & History\\
+4  & David & 555-9987 & 4          & Adam         & Sniper\\
+\end{tabular}
+\textbf{\\Student Table:\\}
+\begin{tabular}{l|l|l|l}
+id & student-name & phone    & major\\
+\hline
+1  & Mary         & 555-1111 & Dancing\\
+2  & Ben          & 555-0121 & Basketweaving\\
+3  & Mary         & 555-3345 & History\\
+4  & David        & 555-9987 & Sniper\\
+\end{tabular}
+\textbf{\\Advisor Table:\\}
+\begin{tabular}{l|l|l}
+student-name & advisor-id & advisor-name\\
+\hline
+Mary         & 1          & Aren\\
+Ben          & 2          & Justin\\
+Mary         & 3          & Wendy\\
+David        & 4          & Adam\\
+\end{tabular}
+\item[c.]
+\ \\
+\begin{tabular}{l|l|l|l|l|l}
+id & student-name & phone    & major         & agent-id & agent-name\\
+\hline
+1  & Mary         & 555-1111 & Dancing       & 1        & Aren\\
+1  & Mary         & 555-1111 & Dancing       & 3        & Wendy\\
+2  & Ben          & 555-0121 & Basketweaving & 2        & Justin\\
+3  & Mary         & 555-3345 & History       & 1        & Aren\\
+3  & Mary         & 555-3345 & History       & 3        & Wendy\\
+4  & David        & 555-9987 & Sniper        & 4        & Adam\\
+\end{tabular}
+\end{description}
 \end{document}
