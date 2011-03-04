@@ -1,0 +1,171 @@
+% Homework 7 - CS386
+% Russell Miller Winter 2011
+
+\documentclass{article}
+\usepackage{anysize}
+\usepackage{wasysym}
+\usepackage{graphicx}
+
+\marginsize{2cm}{2cm}{2cm}{2cm}
+
+\title{CS386 Homework 7}
+\author{Russell Miller}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Part 1}
+\begin{enumerate}
+\item
+\begin{description}
+\item[a.]
+This would be closer to the case of (M+N) because if there is
+a match between Patient.SSN and Provider.SSN there can only be
+one row returned, since it is a unique value for each table.\\
+
+\item[b.]
+This would be closer to the case of (M*N) because it is possible
+for every Student to be male, and every Staff to be male, in which
+case the number of rows would be the number of Staff times the number
+of Students.\\
+
+\end{description}
+
+\item
+\begin{description}
+\item[a.]
+Using an external sort the time would be 2*M, or just 2.
+
+\item[b.]
+The page-oriented nested loop join requires that each table be scanned
+M times, and the total cost is M+M*N -- in this case 2 + 2N.
+
+\end{description}
+
+\item
+\begin{description}
+\item[a.]
+No.
+
+\item[b.]
+Clustering indexes improves sort time, but it cannot improve join time.
+It is still a sequential read for each table, and because of the indexes
+actually takes longer.
+
+\end{description}
+\end{enumerate}
+
+\section*{Part 2A}
+\begin{enumerate}
+\item The result of the query would be sorted by agent\_id.
+\item This would be sorted by salary.
+\item Because those are the clustered indexes.
+\end{enumerate}
+
+\section*{Part 2B}
+\begin{enumerate}
+\item
+\begin{description}
+\item[a.]
+For a) the expected cost is 54.60..54.61.
+For b) the expected cost is 54.60..54.61.
+So they have the same estimated cost.
+
+\item[b.]
+Query a) was faster clocking at 5.242 ms. Query b) took 5.367 ms.
+
+\item[c.]
+Postgres chose to use Hash join for both queries.
+
+\item[d.]
+It doesn't look like it's using clustered indexes.
+
+\end{description}
+
+\item
+\begin{description}
+\item[a.]
+For a) the expected cost is 48.24..48.25.
+For b) the expected cost is 48.24..48.25.
+
+\item[b.]
+Query b) was faster, clocking 3.822 ms. Query a) timed 3.854 ms.
+
+\item[c.]
+They were both Hash joins.
+
+\item[d.]
+There are still no clustered indexes.
+
+\end{description}
+
+\item
+\begin{description}
+\item[a.]
+For a) the expected cost is 48.24..48.25.
+For b) the expected cost is 29.12..29.13.
+
+\item[b.]
+Query b) was faster, clocking 2.141 ms. Query a) timed 3.903 ms.
+
+\item[c.]
+They were both Hash joins.
+
+\item[d.]
+Query b) was clustered on agent\_salary, but Query a) was not.
+
+\end{description}
+
+\item
+For many of those queries, none of the rows got filtered out.
+
+\end{enumerate}
+
+\section*{Part 3}
+\begin{enumerate}
+\item
+\begin{description}
+\item[a.]
+Yes, the constraint $salary > 0$ is pushed into the inner query.
+
+\item[b.]
+It seems like it would be more efficient because less rows would be
+returned to the outer query.
+
+\item[c.]
+No.
+
+\end{description}
+
+\item
+\begin{description}
+\item[a.]
+Yes, the constraint $salary < 56000$ is pushed into the inner query.
+
+\item[b.]
+This time it's definitely more efficient.
+
+\item[c.]
+Yes, it is clustered on salary.
+
+\end{description}
+
+\item
+\begin{description}
+\item[a.]
+Yes, the contraint $salary < 56000$ is pushed into the first inner query
+alongside $salary > 55000$.
+
+\item[b.]
+I would bet that this is more efficient because of the clustered index.
+
+\item[c.]
+Yes.
+
+\end{description}
+
+\end{enumerate}
+
+\end{document}
